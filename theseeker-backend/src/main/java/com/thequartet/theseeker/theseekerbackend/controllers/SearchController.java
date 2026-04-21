@@ -9,7 +9,6 @@ import com.thequartet.theseeker.theseekerbackend.entities.SearchResponse;
 import com.thequartet.theseeker.theseekerbackend.repositories.FailedSearchRepository;
 import com.thequartet.theseeker.theseekerbackend.services.DynamicSearchService;
 import com.thequartet.theseeker.theseekerbackend.services.FailedSearchService;
-import com.thequartet.theseeker.theseekerbackend.services.KnowledgeGraphService;
 import com.thequartet.theseeker.theseekerbackend.services.LuceneSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,6 @@ public class SearchController {
 
     private final LuceneSearchService luceneEngine;
     private final DynamicSearchService dynamicSearchService;
-    private final KnowledgeGraphService knowledgeGraphService;
     private final FailedSearchRepository failedSearchRepository;
     private final FailedSearchService failedSearchService;
 
@@ -36,11 +34,10 @@ public class SearchController {
         long startTime = System.nanoTime();
 
         List<Document> results = luceneEngine.search(q);
-        var panel = knowledgeGraphService.getPanel(q);
 
         long endTime = System.nanoTime();
 
-        SearchResponse response = new SearchResponse(panel, results, calculateTime(startTime, endTime));
+        SearchResponse response = new SearchResponse(results, calculateTime(startTime, endTime));
         return ResponseEntity.ok(response);
     }
 

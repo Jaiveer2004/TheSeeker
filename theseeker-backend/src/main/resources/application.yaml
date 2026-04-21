@@ -1,4 +1,12 @@
 spring:
+  ai:
+    openai:
+      base-url: https://openrouter.ai/api
+      api-key: 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
+      chat:
+        options:
+          model: x-ai/grok-code-fast-1
+
   application:
     name: TheSeeker
   jpa:

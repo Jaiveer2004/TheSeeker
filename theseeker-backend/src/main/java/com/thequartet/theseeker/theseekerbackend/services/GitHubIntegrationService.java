@@ -1,11 +1,11 @@
 package com.thequartet.theseeker.theseekerbackend.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thequartet.theseeker.theseekerbackend.entities.ApiDocument;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class GitHubIntegrationService {
             JsonNode items = root.path("items");
 
             for (JsonNode item : items) {
-                 String name = item.path("name").asString("");
-                String desc = item.path("description").asString("");
-                String url = item.path("url").asString("");
+                 String name = item.path("name").asText("");
+                String desc = item.path("description").asText("");
+                String url = item.path("url").asText("");
                 int stars = item.path("stargazers_count").asInt();
                 
                 priorityApis.add(

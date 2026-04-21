@@ -1,14 +1,14 @@
 package com.thequartet.theseeker.theseekerbackend.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thequartet.theseeker.theseekerbackend.entities.ApiDocument;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import tools.jackson.databind.JsonNode;
-import tools.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -41,10 +41,10 @@ public class ApiCrawlerService {
             JsonNode rootArray = objectMapper.readTree(jsonResponse);
 
             for (JsonNode node : rootArray) {
-                String title = node.path("title").asString("");
-                String desc = node.path("description").asString("");
-                String link = node.path("url").asString("");
-                String auth = node.path("auth").asString("Unknown");
+                String title = node.path("title").asText("");
+                String desc = node.path("description").asText("");
+                String link = node.path("url").asText("");
+                String auth = node.path("auth").asText("Unknown");
 
                 int baseAuthority = 50;
 
@@ -63,9 +63,11 @@ public class ApiCrawlerService {
             String jsonResponse = restTemplate.getForObject(url, String.class);
             JsonNode rootObject = objectMapper.readTree(jsonResponse);
 
-            Collection<String> fieldNamesCollection = rootObject.propertyNames();
+            Iterator<String> fieldNames = rootObject.fieldNames();
 
-            for (String apiName : fieldNamesCollection) {
+            while (fieldNames.hasNext()) {
+                String apiName = fieldNames.next();
+
                 JsonNode apiData = rootObject.get(apiName);
 
                 JsonNode versions = apiData.path("versions");
@@ -73,13 +75,13 @@ public class ApiCrawlerService {
                     for (JsonNode versionNode : versions) {
                         JsonNode info = versionNode.path("info");
 
-                        String title = info.path("title").asString("");
-                        String desc = info.path("description").asString("");
+                        String title = info.path("title").asText("");
+                        String desc = info.path("description").asText("");
 
                         String link = "Unknown URL";
                         JsonNode origins = info.path("x-origin");
                         if (origins.isArray() && !origins.isEmpty()) {
-                            link = origins.get(0).path("url").asString("Unknown URL");
+                            link = origins.get(0).path("url").asText("Unknown URL");
                         }
 
                         if (searchQuery != null && !searchQuery.isEmpty()) {

@@ -28,9 +28,7 @@ public class DataPipelineScheduler {
         log.info("Starting failed-search retry pipeline...");
         List<ApiDocument> masterDataList = new ArrayList<>();
 
-        // ==========================================
-        // PHASE 1: The Demand-Driven Priority Queue
-        // ==========================================
+
         List<FailedSearch> pendingSearches = failedRepo.findByStatus(FailedSearch.SearchStatus.PENDING);
         if (pendingSearches.isEmpty()) {
             log.debug("Skipping retry pipeline: no PENDING failed searches found.");
